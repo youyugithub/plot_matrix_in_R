@@ -14,7 +14,10 @@ plot.matrix<-function(mat,
   newmat<-(mat-value.min)/(value.max-value.min)
   color.gen<-colorRamp(c(color.min,color.max),space="rgb")
   color.rgb<-color.gen(as.vector(newmat))
-  color.rgb[!complete.cases(color.rgb)]<-matrix(col2rgb(color.na),nrow=sum(!complete.cases(color.rgb)),ncol=3,byrow=TRUE)
+  
+  na.occurrence<-!complete.cases(color.rgb)
+  if(any(na.occurrence))
+    color.rgb[na.occurrence,]<-matrix(col2rgb(color.na),nrow=sum(na.occurrence),ncol=3,byrow=TRUE)
   
   rect(xleft=mat.col-0.5,xright=mat.col+0.5,
        ybottom=mat.row-0.5,ytop=mat.row+0.5,col=rgb(color.rgb,max=255),border=NA)
