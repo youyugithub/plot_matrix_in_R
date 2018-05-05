@@ -1,6 +1,6 @@
 plot.matrix<-function(mat,
-                      value.min=min(mat),value.max=max(mat),
-                      color.min="white",color.max="black"){  
+                      value.min=min(mat,na.rm=TRUE),value.max=max(mat,na.rm=TRUE),
+                      color.min="white",color.max="black",color.na="brown"){  
   layout(matrix(c(1,2),1,2),widths=c(0.8,0.2))
   par(mar=c(2,3,3,0.5)) #par(mgp=c(0,0,0),mar=c(4,4,4,0))
   plot.new()
@@ -13,9 +13,11 @@ plot.matrix<-function(mat,
   
   newmat<-(mat-value.min)/(value.max-value.min)
   color.gen<-colorRamp(c(color.min,color.max),space="rgb")
+  color.rgb<-color.gen(as.vector(newmat))
+  color.rgb[!complete.cases(color.rgb)]<-matrix(col2rgb(color.na),nrow=sum(!complete.cases(color.rgb)),ncol=3,byrow=TRUE)
   
   rect(xleft=mat.col-0.5,xright=mat.col+0.5,
-       ybottom=mat.row-0.5,ytop=mat.row+0.5,col=rgb(color.gen(as.vector(newmat)),max=255))
+       ybottom=mat.row-0.5,ytop=mat.row+0.5,col=rgb(color.rgb,max=255),border=NA)
   axis(side=3,at=1:mat.ncol,labels=1:mat.ncol,tick=F)
   axis(side=2,at=1:mat.nrow,labels=1:mat.nrow,tick=F)
   
